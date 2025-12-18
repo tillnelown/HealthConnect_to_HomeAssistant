@@ -30,3 +30,17 @@
 
 -keepclassmembers class me.ayra.ha.healthconnect.models.** { *; }
 -keepattributes Signature,EnclosingMethod,InnerClasses
+
+
+# Prevent R8 from stripping properties from ANY class used by Jackson
+-keepattributes EnclosingMethod,InnerClasses,Signature,AnnotationDefault,*Annotation*
+-keepclassmembers class * {
+    @com.fasterxml.jackson.annotation.* *;
+}
+
+# Specifically protect the class S4.f (and others in its package)
+# Based on your log, S4 seems to be the package name after obfuscation
+-keep class S4.** { *; }
+
+# Also keep the Kotlin data class metadata
+-keep class kotlin.Metadata { *; }
