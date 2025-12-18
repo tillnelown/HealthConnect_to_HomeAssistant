@@ -27,3 +27,6 @@
 # Preserve the Health Connect data models that are cached via Jackson so the
 # generated JSON keeps the expected field names.
 -keep class me.ayra.ha.healthconnect.data.** { *; }
+
+-keepclassmembers class me.ayra.ha.healthconnect.models.** { *; }
+-keepattributes Signature,EnclosingMethod,InnerClasses
