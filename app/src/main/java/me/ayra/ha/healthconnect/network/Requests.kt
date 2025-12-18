@@ -63,11 +63,11 @@ class Requests(
 
     private val responseParser =
         object : ResponseParser {
-            private val mapper: ObjectMapper =
-                jacksonObjectMapper().configure(
-                    DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
-                    false,
-                ).configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false)
+            private val mapper: ObjectMapper = ObjectMapper()
+    .registerModule(com.fasterxml.jackson.module.kotlin.KotlinModule.Builder().build())
+    .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+    .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false)
+
 
             override fun <T : Any> parse(
                 text: String,
