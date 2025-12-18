@@ -44,3 +44,18 @@
 
 # Also keep the Kotlin data class metadata
 -keep class kotlin.Metadata { *; }
+
+# Verhindert, dass R8 die Datenmodelle für Jackson unbrauchbar macht
+-keepattributes Signature,EnclosingMethod,InnerClasses,*Annotation*,PermittedSubclasses
+-keep class kotlin.Metadata { *; }
+
+# Ersetze 'me.ayra.ha.healthconnect.models' durch das Paket deiner Datenklassen
+-keep class me.ayra.ha.healthconnect.** { *; }
+
+# Verhindert das Entfernen von Serialisierungseigenschaften generell
+-keepclassmembers class * {
+    @com.fasterxml.jackson.annotation.* *;
+    public <methods>;
+    public <fields>;
+}
+
