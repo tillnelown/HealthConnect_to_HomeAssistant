@@ -61,31 +61,22 @@ class Requests(
 
     var defaultHeaders: Map<String, String> = mapOf("User-Agent" to USER_AGENT)
 
-    private val responseParser =
-        object : ResponseParser {
-            private val mapper: ObjectMapper = ObjectMapper()
-    .registerModule(com.fasterxml.jackson.module.kotlin.KotlinModule.Builder().build())
-    .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-    .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false)
+    private val responseParser = object : ResponseParser {
+    private val mapper: ObjectMapper = ObjectMapper()
+        .registerModule(com.fasterxml.jackson.module.kotlin.KotlinModule.Builder().build())
+        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+        .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false)
+        // Erzwingt, dass Jackson alle Felder sieht, auch wenn R8 die Getter entfernt hat:
+        .setVisibility(
+            com.fasterxml.jackson.annotation.PropertyAccessor.ALL,
+            com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY
+        )
 
+    override fun <T : Any> parse(text: String, kClass: KClass<T>): T = mapper.readValue(text, kClass.java)
+    override fun <T : Any> parseSafe(text: String, kClass: KClass<T>): T? = try { mapper.readValue(text, kClass.java) } catch (e: Exception) { null }
+    override fun writeValueAsString(obj: Any): String = mapper.writeValueAsString(obj)
+}
 
-            override fun <T : Any> parse(
-                text: String,
-                kClass: KClass<T>,
-            ): T = mapper.readValue(text, kClass.java)
-
-            override fun <T : Any> parseSafe(
-                text: String,
-                kClass: KClass<T>,
-            ): T? =
-                try {
-                    mapper.readValue(text, kClass.java)
-                } catch (e: Exception) {
-                    null
-                }
-
-            override fun writeValueAsString(obj: Any): String = mapper.writeValueAsString(obj)
-        }
 
     fun get(
         url: String,
