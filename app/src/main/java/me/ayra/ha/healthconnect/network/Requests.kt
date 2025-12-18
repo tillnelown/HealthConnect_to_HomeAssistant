@@ -66,7 +66,7 @@ class Requests(
                 jacksonObjectMapper().configure(
                     DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
                     false,
-                )
+                ).configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false)
 
             override fun <T : Any> parse(
                 text: String,
